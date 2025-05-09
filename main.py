@@ -49,41 +49,31 @@ UTILS = {
 
 class KeywordQueryEventListener(EventListener):
     def on_event(self, event, extension):
-        keyword = event.get_keyword()
-        query = (event.get_argument() or "").strip()
-
-        command, _, textToProcess = query.partition(' ')
-        command = command.lower()
-
-        if command in UTILS and textToProcess:
-            friendlyName, utilsFunc = UTILS[command]
-            processedText = utilsFunc(textToProcess)
-            return RenderResultListAction([ExtensionResultItem(
-                icon='images/icon.png',
-                name=f"{friendlyName}: {processedText}",
-                description="Press Enter to copy the result",
-                highlightable=False,
-                on_enter=CopyToClipboardAction(processedText)
-            )])
-
-        if command in UTILS:
-            friendlyName, _ = UTILS[command]
-            return RenderResultListAction([ExtensionResultItem(
-                icon='images/icon.png',
-                name=friendlyName,
-                description=f"Type text after '{keyword} {command}' to process",
-                highlightable=False,
-                on_enter=SetUserQueryAction(f"{keyword} {command} ")
-            )])
-
-        items = [ExtensionResultItem(
+        items = []
+        query = event.get_argument() or ""
+        
+        if not query:
+            for key, (friendlyName, _) in UTILS.items():
+                items.append(ExtensionResultItem(
+                    icon='images/icon.png',
+                    name=friendlyName,
+                    description=f"Digite o texto para {friendlyName.lower()}",
+                    highlightable=False,
+                    on_enter=SetUserQueryAction(f"{event.get_keyword()} {key} ")
+                ))
+        
+            return RenderResultListAction(items)
+            
+        for key, (friendlyName, func) in UTILS.items():
+            processed = func(query)
+            items.append(ExtensionResultItem(
             icon='images/icon.png',
-            name=friendlyName,
-            description=f"Usage: {keyword} {key} [text]",
+            name=f"{friendlyName}",
+            description=f"Pressione Enter para copiar: {processed}",
             highlightable=False,
-            on_enter=SetUserQueryAction(f"{keyword} {key} ")
-        ) for key, (friendlyName, _) in UTILS.items()]
-
+            on_enter=CopyToClipboardAction(processed)
+            ))
+        
         return RenderResultListAction(items)
 
 class StringUtilsExtension(Extension):
