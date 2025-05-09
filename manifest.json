@@ -1,0 +1,19 @@
+{
+  "required_api_version": "^2.0.0",
+  "name": "String Utils",
+  "description": "Useful string manipulation utilities for developers and text processing",
+  "developer_name": "Divino H. Arantes",
+  "icon": "images/icon.png",
+  "options": {
+    "query_debounce": 0.05
+  },
+  "preferences": [
+    {
+      "id": "str",
+      "type": "keyword",
+      "name": "String Utilities",
+      "description": "Access string manipulation utilities",
+      "default_value": "str"
+    }
+  ]
+}
