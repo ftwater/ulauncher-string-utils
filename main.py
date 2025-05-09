@@ -1,4 +1,6 @@
 import re
+import hashlib
+
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.shared.event import KeywordQueryEvent
@@ -37,6 +39,9 @@ class StringUtils:
     def convertToTitleCase(text) -> str:
         return text.title()
     
+    def convertToMD5(text) -> str:
+        return hashlib.md5(text.encode()).hexdigest()
+    
 
 UTILS = {
     'remove': ('Remove Special Characters', StringUtils.removeSpecialCharacters),
@@ -47,6 +52,7 @@ UTILS = {
     'kebab': ('Convert to Kebab Case', StringUtils.convertToKebabCase),
     'sentence': ('Convert to Sentence Case', StringUtils.convertToSentenceCase),
     'title': ('Convert to Title Case', StringUtils.convertToTitleCase),
+    'md5': ('Convert to MD5 Hash', StringUtils.convertToMD5),
 }
 
 class KeywordQueryEventListener(EventListener):
