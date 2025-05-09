@@ -54,30 +54,49 @@ class KeywordQueryEventListener(EventListener):
         items = []
         query = event.get_argument() or ""
         
+        parts = query.split(" ", 1)
+        command = parts[0].lower()
+        
         if not query:
             for key, (friendlyName, _) in UTILS.items():
-                items.append(ExtensionResultItem(
-                    icon='images/icon.png',
-                    name=friendlyName,
-                    description=f"Digite o texto para {friendlyName.lower()}",
-                    highlightable=False,
-                    on_enter=SetUserQueryAction(f"{event.get_keyword()} {key} ")
-                ))
-        
+                items.append(self._createCommandItem(event, key, friendlyName))
             return RenderResultListAction(items)
+        
+        if command in UTILS:
+            if len(parts) == 1:
+                friendlyName, _ = UTILS[command]
+                items.append(self._createCommandItem(event, command, friendlyName))
+                return RenderResultListAction(items)
             
+            text = parts[1]
+            friendlyName, func = UTILS[command]
+            processed = func(text)
+            items.append(self._createResultItem(processed, friendlyName))
+            return RenderResultListAction(items)
+        
         for key, (friendlyName, func) in UTILS.items():
             processed = func(query)
-            items.append(ExtensionResultItem(
+            items.append(self._createResultItem(processed, friendlyName))
+        return RenderResultListAction(items)
+    
+    def _createCommandItem(self, event, command, friendly_name):
+        return ExtensionResultItem(
             icon='images/icon.png',
-            name=f"{friendlyName}",
-            description=f"Pressione Enter para copiar: {processed}",
+            name=friendly_name,
+            description=f"Type text to {friendly_name.lower()}",
+            highlightable=False,
+            on_enter=SetUserQueryAction(f"{event.get_keyword()} {command} ")
+        )
+        
+    def _createResultItem(self, processed, friendly_name):
+        return ExtensionResultItem(
+            icon='images/icon.png',
+            name=f"{friendly_name}",
+            description=f"Press Enter to copy: {processed}",
             highlightable=False,
             on_enter=CopyToClipboardAction(processed)
-            ))
+        )
         
-        return RenderResultListAction(items)
-
 class StringUtilsExtension(Extension):
     def __init__(self):
         super().__init__()
