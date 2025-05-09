@@ -9,7 +9,7 @@ from ulauncher.api.shared.action.SetUserQueryAction import SetUserQueryAction
 
 class StringUtils:
     def removeSpecialCharacters(text) -> str:
-        return re.sub(r'[^a-zA-Z0-9]', '', text)
+        return re.sub(r'[^a-zA-Z0-9\s]', '', text)
     
     def convertToUpperCase(text) -> str:
         return text.upper()
@@ -30,11 +30,12 @@ class StringUtils:
         return '-'.join(word.lower() for word in words)
     
     def convertToSentenceCase(text) -> str:
-        words = text.split()
-        return ' '.join(word.capitalize() for word in words)
+        if not text:
+            return ""
+        return text[0].upper() + text[1:].lower()
     
-    def splitText(text) -> str:
-        return text.split()
+    def convertToTitleCase(text) -> str:
+        return text.title()
     
 
 UTILS = {
@@ -45,6 +46,7 @@ UTILS = {
     'snake': ('Convert to Snake Case', StringUtils.convertToSnakeCase),
     'kebab': ('Convert to Kebab Case', StringUtils.convertToKebabCase),
     'sentence': ('Convert to Sentence Case', StringUtils.convertToSentenceCase),
+    'title': ('Convert to Title Case', StringUtils.convertToTitleCase),
 }
 
 class KeywordQueryEventListener(EventListener):
