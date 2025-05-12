@@ -11,7 +11,7 @@ from ulauncher.api.shared.action.SetUserQueryAction import SetUserQueryAction
 
 class StringUtils:
     def removeSpecialCharacters(text) -> str:
-        return re.sub(r'[^a-zA-Z0-9\s]', '', text)
+        return re.sub(r'[^\w\sÀ-ÿ]', '', text)
     
     def convertToUpperCase(text) -> str:
         return text.upper()
