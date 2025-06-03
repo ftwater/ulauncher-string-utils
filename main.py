@@ -42,6 +42,14 @@ class StringUtils:
     def convertToMD5(text) -> str:
         return hashlib.md5(text.encode()).hexdigest()
     
+    def convertToSqlInString(text) -> str:
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        return ",".join(f"'{item}'" for item in lines)
+    
+    def convertToSqlInNumbers(text) -> str:
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        return ",".join(lines)
+    
 
 UTILS = {
     'remove': ('Remove Special Characters', StringUtils.removeSpecialCharacters),
@@ -53,8 +61,9 @@ UTILS = {
     'sentence': ('Convert to Sentence Case', StringUtils.convertToSentenceCase),
     'title': ('Convert to Title Case', StringUtils.convertToTitleCase),
     'md5': ('Convert to MD5 Hash', StringUtils.convertToMD5),
+    'sqlinstr': ('Convert to SQL IN String', StringUtils.convertToSqlInString),
+    'sqlinnum': ('Convert to SQL IN Numbers', StringUtils.convertToSqlInNumbers),
 }
-
 class KeywordQueryEventListener(EventListener):
     def on_event(self, event, extension):
         items = []
