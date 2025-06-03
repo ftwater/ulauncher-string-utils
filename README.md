@@ -11,6 +11,8 @@ A simple Ulauncher extension that provides various string manipulation utilities
 * **snake** - Convert to snake_case
 * **kebab** - Convert to kebab-case
 * **sentence** - Convert to Sentence case
+* **sqlinstr** - Convert to SQL IN String (e.g., 'aa','bb','cc')
+* **sqlinnum** - Convert to SQL IN Numbers (e.g., 11,22,33)
 
 ## Usage
 
@@ -23,6 +25,8 @@ str [command] [text]
 For example:
 ```
 str upper hello world
+str sqlinstr apple\nbanana\norange  →  'apple','banana','orange'
+str sqlinnum 11\n22\n33             →  11,22,33
 ```
 
 Press Enter to copy the result to clipboard.
